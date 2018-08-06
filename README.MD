@@ -31,7 +31,7 @@ The following items may be specified in a plugin configuration:
 <!-- insert into build/plugins section -->
 <plugin>
     <groupId>io.solit.maven</groupId>
-    <artifactId>cat-maven-plugin</projectId>
+    <artifactId>cat-maven-plugin</artifactId>
     <version>${cat-plugin-version}</version>
     <executions>
         <execution>
