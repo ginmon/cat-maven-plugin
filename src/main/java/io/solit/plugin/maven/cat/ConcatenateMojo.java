@@ -100,22 +100,32 @@ public class ConcatenateMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if (files == null)
+        if (files == null) {
+            getLog().info("[cat-maven-plugin]: No files are set, skipping");
             return;
-        if (outputDirectory == null || outputDirectory.isEmpty())
+        }
+        if (outputDirectory == null || outputDirectory.isEmpty()) {
             throw new MojoFailureException("Output directory must be set");
+        }
         Path outputDir = Paths.get(outputDirectory);
+        getLog().info("[cat-maven-plugin]: Path outputDir: " + outputDir);
+        getLog().info("[cat-maven-plugin]: Files " + files);
         for (ConcatenatedFile file: files) {
             try{
+                getLog().info("[cat-maven-plugin]: File " + file);
                 if (file.getOutputFile() == null || file.getOutputFile().isEmpty())
                     throw new MojoFailureException("File name is not provided");
                 Path out = outputDir.resolve(file.getOutputFile());
-                if (skip(out, file.isSkipExisting()))
+                if (skip(out, file.isSkipExisting())) {
+                    getLog().info("[cat-maven-plugin]: skipping " + file);
                     continue;
+                }
                 ensureDirectories(out);
                 try (OutputStream output = openDestFile(out, file.isAppend())) {
-                    if (file.getParts() == null || file.getParts().isEmpty())
+                    if (file.getParts() == null || file.getParts().isEmpty()) {
+                        getLog().info("[cat-maven-plugin]: parts are empty, skipping");
                         continue;
+                    }
                     for (URI uri: file.getParts()) {
                         String scheme = uri.getScheme();
                         if (scheme == null)
@@ -166,12 +176,14 @@ public class ConcatenateMojo extends AbstractMojo {
 
     protected void ensureDirectories(Path path) throws IOException {
         Path dir = path.getParent();
-        if (!Files.exists(dir))
+        if (!Files.exists(dir)) {
             Files.createDirectories(dir);
+        }
     }
 
     protected InputStream resolveArtifact(Artifact artifact) throws ArtifactResolutionException, FileNotFoundException {
         InputStream artifactStream;
+        getLog().info("[cat-maven-plugin]: resolving artifact " + artifact);
         ArtifactRequest request = new ArtifactRequest(
                 artifact, _project.getRemoteProjectRepositories(), null
         );
@@ -186,6 +198,7 @@ public class ConcatenateMojo extends AbstractMojo {
     }
 
     private InputStream processDataURI(URI uri) throws MojoFailureException {
+        getLog().info("[cat-maven-plugin]: resolving uri " + uri);
         int sep = uri.getSchemeSpecificPart().indexOf(',');
         if (sep < 0)
             throw new MojoFailureException("Data uri should contain ',' separating actual data");
@@ -200,6 +213,7 @@ public class ConcatenateMojo extends AbstractMojo {
 
     private InputStream processFileURI(URI uri) throws IOException, MojoFailureException {
         try {
+            getLog().info("[cat-maven-plugin]: resolving file " + uri);
             Path source = _projectDirectory.toPath().resolve(uri.getSchemeSpecificPart());
             return openSourceFile(source);
         } catch (NoSuchFileException e) {
@@ -208,6 +222,7 @@ public class ConcatenateMojo extends AbstractMojo {
     }
 
     private InputStream processMavenURI(URI uri) throws MojoFailureException, IOException {
+        getLog().info("[cat-maven-plugin]: resolving maven uri " + uri);
         Matcher matcher = MAVEN_URI.matcher(uri.getSchemeSpecificPart());
         if (!matcher.matches())
             throw new MojoFailureException("Malformed maven uri: " + uri);

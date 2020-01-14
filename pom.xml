@@ -17,7 +17,7 @@
     </properties>
     
     <name>concatenation maven plugin</name>
-    <url>https://github.com/io-solit/cat-maven-plugin</url>
+    <url>https://github.com/ginmon/cat-maven-plugin</url>
 
     <description>
         Maven plugin to concatenate files from different sources into a single file in output directory
@@ -34,10 +34,21 @@
     <inceptionYear>2018</inceptionYear>
 
     <scm>
-        <url>https://github.com/io-solit/cat-maven-plugin</url>
-        <connection>scm:git:https://github.com/io-solit/cat-maven-plugin.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:io-solit/cat-maven-plugin.git</developerConnection>
+        <url>https://github.com/ginmon/cat-maven-plugin</url>
+        <connection>scm:git:https://github.com/ginmon/cat-maven-plugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:ginmon/cat-maven-plugin.git</developerConnection>
     </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ginmon.snapshot</id>
+            <url>s3://maven.ginmon-internal.com/snapshot</url>
+        </snapshotRepository>
+        <repository>
+            <id>ginmon.release</id>
+            <url>s3://maven.ginmon-internal.com/release</url>
+        </repository>
+    </distributionManagement>
 
     <licenses>
         <license>
@@ -74,17 +85,6 @@
         </dependency>
 
     </dependencies>
-    
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
     
     <build>
         <plugins>

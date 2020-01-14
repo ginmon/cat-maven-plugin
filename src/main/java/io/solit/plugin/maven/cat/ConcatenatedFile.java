@@ -32,4 +32,14 @@ public class ConcatenatedFile {
     public boolean isAppend() {
         return append;
     }
+
+    @Override
+    public String toString() {
+        return "ConcatenatedFile{" +
+            "file='" + file + '\'' +
+            ", parts=" + parts +
+            ", skipExisting=" + skipExisting +
+            ", append=" + append +
+            '}';
+    }
 }
